@@ -5,10 +5,21 @@
 
 int tree_build(node* root, int* data, int size)
 {
-    int i = 0;
-    for(int i = 0; i < size; ++i)
-       i |= tree_insert(root, data[i]);
-    return i;
+    int flag = 1;
+    for(int i = 0; i < size && flag; ++i)
+       flag &= tree_insert(root, data[i]);
+    return flag;
+}
+
+void delete_the_tree(node** head)
+{
+    if(*head != NULL)
+    {
+        delete_the_tree(&((*head)->left));
+        delete_the_tree(&((*head)->right));
+        free(*head);
+        *head = NULL;
+    }
 }
 
 void inorder_tree_walk(node* x)
@@ -74,7 +85,7 @@ node* inorder_tree_successor(node* x)
 int tree_insert(node* root, int value)
 {
     if(!root)
-        return 1;
+        return 0;
      
     node* trailing = root;
     node* current = root;
@@ -91,7 +102,7 @@ int tree_insert(node* root, int value)
     {
         trailing->left = calloc(1,sizeof(node));
         if(!trailing->left)
-            return 1;
+            return 0;
 
         trailing->left->key = value;
         trailing->left->left = NULL;
@@ -102,14 +113,14 @@ int tree_insert(node* root, int value)
     {
         trailing->right = calloc(1,sizeof(node));
         if(!trailing->right)
-            return 1;
+            return 0;
 
         trailing->right->key = value;
         trailing->right->left = NULL;
         trailing->right->right = NULL;
         trailing->right->previous = trailing;
     } 
-    return 0;  
+    return 1;  
 }
 
 void transplant(node* u, node* v)
@@ -141,5 +152,5 @@ void tree_delete(node* z)
         successor->left = z->left;
         successor->left->previous = successor;
     }
-    free(z);
+    //free(z); //Better do this in its caller.
 }
