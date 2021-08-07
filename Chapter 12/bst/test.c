@@ -17,6 +17,8 @@ int main(void)
     tree_insert(root, 38);
     tree_insert(root, INT_MAX);
 
+    printf("\n");
+
     printf("Tree Max: %d\n", tree_max(root)->key);
     printf("Tree Min: %d\n", tree_min(root)->key);
 
@@ -25,14 +27,18 @@ int main(void)
 
     search_result = iterative_tree_search(root, -1);
     if(search_result)
-        printf("This line should not emerge: %d\n");
-    
+        printf("This line should not emerge!!!\n");
+    else
+        printf("-1 does not exists in this tree...\n");
+
     search_result = tree_search(root, 38);
     tree_delete(search_result);
     free(search_result);
     search_result = NULL;
     printf("What the tree like after the node with key 38 was deleted:\n");
     inorder_tree_walk(root);
+
+    printf("\n");
 
     search_result = iterative_tree_search(root, INT_MAX);
     tree_delete(search_result);

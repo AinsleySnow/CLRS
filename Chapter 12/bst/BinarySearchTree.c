@@ -37,9 +37,9 @@ node* tree_search(node* x, int k)
     if(x == NULL || x->key == k)
         return x;
     if(k < x->key)
-        return tree_search(x->left);
+        return tree_search(x->left, k);
     else
-        return tree_search(x->right);
+        return tree_search(x->right, k);
 }
 
 node* iterative_tree_search(node* x, int k)
@@ -104,10 +104,10 @@ int tree_insert(node* root, int value)
         if(!trailing->left)
             return 0;
 
-        trailing->left->key = value;
-        trailing->left->left = NULL;
-        trailing->left->right = NULL;
-        trailing->left->previous = trailing;
+        (trailing->left)->key = value;
+        (trailing->left)->left = NULL;
+        (trailing->left)->right = NULL;
+        (trailing->left)->previous = trailing;
     }
     else
     {
@@ -115,21 +115,25 @@ int tree_insert(node* root, int value)
         if(!trailing->right)
             return 0;
 
-        trailing->right->key = value;
-        trailing->right->left = NULL;
-        trailing->right->right = NULL;
-        trailing->right->previous = trailing;
+        (trailing->right)->key = value;
+        (trailing->right)->left = NULL;
+        (trailing->right)->right = NULL;
+        (trailing->right)->previous = trailing;
     } 
     return 1;  
 }
 
 void transplant(node* u, node* v)
 {
-    if(u == u->previous->left)
-        u->previous->left = v;
-    else
-        u->previous->right = v;
-    if(!v)
+    if(u->previous)
+    {
+        if(u == (u->previous)->left)
+            (u->previous)->left = v;
+        else
+            (u->previous)->right = v;
+    }
+
+    if(v)
         v->previous = u->previous;
 }
 
@@ -146,11 +150,11 @@ void tree_delete(node* z)
         {
             transplant(successor, successor->right);
             successor->right = z->right;
-            successor->right->previous = successor;
+            (successor->right)->previous = successor;
         }
         transplant(z, successor);
         successor->left = z->left;
-        successor->left->previous = successor;
+        (successor->left)->previous = successor;
     }
     //free(z); //Better do this in its caller.
 }

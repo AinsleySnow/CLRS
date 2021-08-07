@@ -1,13 +1,13 @@
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
-struct node
+typedef struct node
 {
     int key;
-    node* previous;
-    node* left;
-    node* right;
-}typedef node node;
+    struct node* previous;
+    struct node* left;
+    struct node* right;
+} node;
 
 int tree_build(node*, int*, int);
 void inorder_tree_walk(node*);

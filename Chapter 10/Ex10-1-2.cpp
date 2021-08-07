@@ -150,15 +150,3 @@ bool IsStack2Empty()
 {
 	return s2top == size;
 }
-
-
-
-
-
-
-
-
-
-
-
-
