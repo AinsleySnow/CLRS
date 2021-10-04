@@ -12,8 +12,7 @@ typedef enum color
 
 typedef struct graph_node
 {
-    int d;
-    int f;
+    int cc;
     color c;
     pnode pi;
     adjacency_list adj;
@@ -22,8 +21,6 @@ typedef struct graph_node
 typedef graph_node* pnode;
 typedef graph_node* vertex_list;
 typedef graph_node** adjacency_list;
-
-static int time = 0;
 
 void dfs(vertex_list vl)
 {
@@ -35,14 +32,17 @@ void dfs(vertex_list vl)
     }
     
     for (int i = 0; i < n; ++i)
+    {
         if (vl[i].c == white)
+        {
+            
             dfs_visit(vl, vl + i);
+        }   
+    }       
 }
 
 void dfs_visit(vertex_list vl, pnode u)
 {
-    time++;
-    u->d = time;
     u->c = gray;
     int n = sizeof(u->adj) / sizeof(pnode);
     for (int i = 0; i < n; ++i)
@@ -55,8 +55,6 @@ void dfs_visit(vertex_list vl, pnode u)
         }
     }
     u->c = black;
-    time++;
-    u->f = time;
 }
 
 vertex_list build_graph()
@@ -91,9 +89,9 @@ void print_graph(vertex_list vl)
     for (int i = 0; i < n; ++i)
     {
         printf("%dth vertex:\n");
-        printf("distence = %d\n", vl[i].d);
         printf("color = %d\n", vl[i].c);
         printf("pi = %d\n", (int)(vl[i].pi - vl));
+        printf("cc = %d\n", vl[i].cc)
         printf("\n");
     }
 }
@@ -109,7 +107,7 @@ void delete_graph(vertex_list vl)
 int main(void)
 {
     vertex_list vl = build_graph();
-    bfs(vl, vl + 1);
+    dfs(vl);
     print_graph(vl);
 
     delete_graph(vl);

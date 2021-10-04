@@ -15,12 +15,12 @@ node search(node* head, int key)
     do
     {
         current = next;
-        if(current->v == key)
+        if (current->v == key)
             return current;
         next = (node*)((long)next ^ head->np);
-    }while(current);
+    } while (current);
 
-    return {0, 0};
+    return { 0, 0 };
 }
 
 void insert(node* head, int key)
@@ -31,12 +31,12 @@ void insert(node* head, int key)
 
     node* prev = 0;
     node* temp = NULL;
-    while(temp = (node*)((long)(current->np) ^ prev))
+    while (temp = (node*)((long)(current->np) ^ prev))
     {
         prev = current;
         current = temp;
     }
-    
+
     x->np = prev;
     x->v = key;
     current->np ^= (long)x;
@@ -49,9 +49,9 @@ void delete(node* head, node* x)
     node* prev = NULL;
     node* temp = NULL;
 
-    while(current)
+    while (current)
     {
-        if(current == x)
+        if (current == x)
         {
             prev = (node*)(current->np ^ (long)next);
             current = next;
@@ -63,8 +63,8 @@ void delete(node* head, node* x)
         }
         temp = (node*)((long)(current->np) ^ prev);
         prev = current
-        current = temp;
-    }    
+            current = temp;
+    }
 }
 
 int main(void)
