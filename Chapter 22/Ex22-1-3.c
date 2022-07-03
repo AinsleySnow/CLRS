@@ -1,26 +1,27 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct graph_node
-{
-    int index;
-    adjacency_list adj;
-} graph_node;
-
 typedef struct list_node
 {
     void* content;
-    list_node* next;
+    struct list_node* next;
 } list_node;
+
+typedef struct graph_node
+{
+    int index;
+    int adj_size;
+    list_node* adj;
+} graph_node;
 
 typedef graph_node* vertex_list;
 typedef graph_node* pnode;
 typedef list_node* adjacency_list;
 
-void append(adjacency_list adj, void* content)
+void append(adjacency_list* adj, void* content)
 {
-    list_node* current = adj;
-    list_node* trailing = NULL;
+    list_node* current = *adj;
+    list_node* trailing = current;
     while (current)
     {
         trailing = current;
@@ -29,35 +30,34 @@ void append(adjacency_list adj, void* content)
 
     current = calloc(1, sizeof(list_node));
     current->content = content;
-    trailing->next = current;
+    if (trailing)
+        trailing->next = current;
+    else
+        *adj = current;
 }
 
-void transpose_adjacency_martrix(int** martrix)
+void transpose_adjacency_martrix(int n, int matrix[][n])
 {
-    int m = sizeof(martrix) / sizeof(int*);
-    int n = sizeof(*martrix) / sizeof(int);
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        for (int j = i + 1; j < n; ++j)
+        for (int j = i; j < n; ++j)
         {
-            int temp = martrix[i][j];
-            martrix[i][j] = martrix[j][i];
-            martrix[j][i] = temp;
+            int temp = matrix[i][j];
+            *(&matrix[i][j]) = matrix[j][i];
+            *(&matrix[j][i]) = temp;
         }
     }
 }
 
-void transpose_adjacency_list(vertex_list vl, vertex_list out)
+void transpose_adjacency_list(vertex_list vl, vertex_list out, int n)
 {
-    int n = sizeof(vl) / sizeof(graph_node);
-
     for (int i = 0; i < n; ++i)
     {
-        int m = sizeof(vl[i].adj) / sizeof(graph_node);
+        int m = vl[i].adj_size;
         for (int j = 0; j < m; ++j)
         {
             int index = ((graph_node*)(vl[i].adj[j].content))->index;
-            append(out[index].adj, vl + i);
+            append(&out[index].adj, vl + i);
         }
     }
 }
@@ -65,26 +65,38 @@ void transpose_adjacency_list(vertex_list vl, vertex_list out)
 vertex_list bulid_graph()
 {
     vertex_list g = calloc(6, sizeof(graph_node));
+    g[0].index = 0;
     g[0].adj = calloc(2, sizeof(pnode));
+    g[0].adj_size = 2;
     g[0].adj[0].content = g + 1;
     g[0].adj[0].next = g[0].adj + 1;
     g[0].adj[1].content = g + 3;
 
     g[1].adj = calloc(1, sizeof(pnode));
+    g[1].index = 1;
+    g[1].adj_size = 1;
     g[1].adj[0].content = g + 4;
 
     g[2].adj = calloc(2, sizeof(pnode));
+    g[2].index = 2;
+    g[2].adj_size = 2;
     g[2].adj[0].content = g + 4;
     g[2].adj[0].next = g[2].adj + 1;
     g[2].adj[1].content = g + 5;
 
     g[3].adj = calloc(1, sizeof(pnode));
+    g[3].index = 3;
+    g[3].adj_size = 1;
     g[3].adj[0].content = g + 2;
 
     g[4].adj = calloc(1, sizeof(pnode));
+    g[4].index = 4;
+    g[4].adj_size = 1;
     g[4].adj[0].content = g;
 
     g[5].adj = calloc(1, sizeof(pnode));
+    g[5].index = 5;
+    g[5].adj_size = 1;
     g[5].adj[0].content = g + 5;
 
     return g;
@@ -92,7 +104,7 @@ vertex_list bulid_graph()
 
 int main(void)
 {
-    int martrix[][6] = {
+    int matrix[][6] = {
         { 0, 1, 0, 1, 0, 0 },
         { 0, 0, 0, 0, 1, 0 },
         { 0, 0, 0, 0, 1, 1 },
@@ -101,17 +113,29 @@ int main(void)
         { 0, 0, 0, 0, 0, 1 }
     };
 
-    transpose_adjacency_martrix(martrix);
+    transpose_adjacency_martrix(6, matrix);
     for (int i = 0; i < 6; ++i)
     {
         for (int j = 0; j < 6; ++j)
-            printf("%d ", martrix[i][j]);
+            printf("%d ", matrix[i][j]);
         printf("\n");
     }
     printf("\n");
 
+
     vertex_list vl = bulid_graph();
     vertex_list out = calloc(6, sizeof(graph_node));
-    transpose_adjacency_list(vl, out);
+    for (int i = 0; i < 6; ++i)
+        out[i].index = i;
+    transpose_adjacency_list(vl, out, 6);
     
+    for (int i = 0; i < 6; ++i)
+    {
+        printf("%d:\n    ", out[i].index);
+        for (list_node* current = out[i].adj; current; current = current->next)
+            printf("%d ", ((graph_node*)(current->content))->index);
+        printf("\n");
+    }
+
+    return 0;
 }
