@@ -10,8 +10,8 @@ BFS: BFS.c ../Queue/Queue.c ../Queue/Queue.h
 DFS: DFS.c 
 	$(CC) $(CFLAGS) $(LIBS) -o DFS DFS.c
 
-FindSCC: FindSCC.c
-	$(CC) $(CFLAGS) $(LIBS) -o FindSCC FindSCC.c
+FindSCC: FindSCC.c ..\List\List.c ..\List\List.h
+	$(CC) $(CFLAGS) $(LIBS) -o FindSCC FindSCC.c ..\List\List.c
 
-TopologicalSort: TopologicalSort.c
-	$(CC) $(CFLAGS) $(LIBS) -o TopologicalSort TopologicalSort.c
+TopologicalSort: TopologicalSort.c ..\List\List.c ..\List\List.h
+	$(CC) $(CFLAGS) $(LIBS) -o TopologicalSort TopologicalSort.c ..\List\List.c
