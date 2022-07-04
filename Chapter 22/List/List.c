@@ -12,10 +12,36 @@ void list_append(list* l, void* content)
 {
     list_node* new_node = calloc(1, sizeof(list_node));
     new_node->content = content;
-    new_node->prev = l->tail;
+    
+    if (l->head)
+    {
+        new_node->prev = l->tail;
+        l->tail->next = new_node;
+        l->tail = new_node;
+    }
+    else
+    {
+        l->head = new_node;
+        l->tail = new_node;
+    }
+}
 
-    l->tail->next = new_node;
-    l->tail = new_node;
+void list_insert_to_head(list* l, void* content)
+{
+    list_node* new_node = calloc(1, sizeof(list_node));
+    new_node->content = content;
+
+    if (l->head == NULL)
+    {
+        l->head = new_node;
+        l->tail = new_node;
+    }
+    else
+    {
+        new_node->next = l->head;
+        l->head->prev = new_node;
+        l->head = new_node;
+    }
 }
 
 void list_remove(list* l, void* content)

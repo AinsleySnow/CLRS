@@ -18,6 +18,7 @@ typedef struct list
 
 void list_create(list* l, void* content);
 void list_append(list* l, void* content);
+void list_insert_to_head(list* l, void* content);
 void list_remove(list* l, void* content);
 void list_free(list* l);
 bool is_in(list* l, void* content);
