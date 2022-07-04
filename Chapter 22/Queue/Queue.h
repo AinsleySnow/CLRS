@@ -6,8 +6,8 @@
 typedef struct que_node
 {
     void* content;
-    que_node* next;
-    que_node* prev;
+    struct que_node* next;
+    struct que_node* prev;
 } que_node;
 
 typedef struct queue

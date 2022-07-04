@@ -3,23 +3,37 @@
 
 void* dequeue(queue* q)
 {
-    que_node* n = q->head;
-    q->head = n->next;
-    void* ans = n->content;
-    
-    free(n);
-    return ans;
+    if (q->head)
+    {
+        que_node* n = q->head;
+        q->head = n->next;
+        if (q->head == NULL)
+            q->tail = NULL;
+        void* content = n->content;
+        free(n);
+        return content;
+    }
+
+    return NULL;
 }
 
-void enqueue(queue* q, const void* content)
+void enqueue(queue* q, void* content)
 {
     que_node* n = calloc(1, sizeof(que_node));
     n->content = content;
-    n->prev = q->tail;
-    q->tail = n;
-    if (!q->head)
+
+    if (q->head)
+    {
+        n->prev = q->tail;
+        q->tail->next = n;
+        q->tail = n;
+    }
+    else
+    {
         q->head = n;
-} 
+        q->tail = n;
+    }
+}
 
 void free_queue(queue* q)
 {
@@ -38,5 +52,5 @@ void free_queue(queue* q)
 
 bool is_empty(queue* q)
 {
-    return (bool)q->head;
+    return (q->head == NULL);
 }
