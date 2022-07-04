@@ -17,9 +17,8 @@ typedef struct graph_vertex
     color c;
 } graph_vertex;
 
-void bfs_matrix(graph_vertex** g, int s)
+void bfs_matrix(graph_vertex** g, int s, int n)
 {
-    int n = sizeof(g) / sizeof(graph_vertex*);
     queue q = { NULL, NULL };
 
     g[s][0].d = 0;
@@ -48,8 +47,13 @@ void bfs_matrix(graph_vertex** g, int s)
 
 int main(void)
 {
-    graph_vertex g[8][8];
-
+    graph_vertex** g = calloc(8, sizeof(graph_vertex*));
+    for (int i = 0; i < 8; ++i)
+    {
+        g[i] = calloc(8, sizeof(graph_vertex));
+        g[i][0].pi = -1;
+    }
+    
     g[0][1].isConnected = 1;
     g[0][4].isConnected = 1;
 
@@ -78,7 +82,7 @@ int main(void)
     g[7][3].isConnected = 1;
     g[7][6].isConnected = 1;
 
-    bfs_matrix(g, 1);
+    bfs_matrix(g, 1, 8);
 
     for (int i = 0; i < 8; ++i)
     {
