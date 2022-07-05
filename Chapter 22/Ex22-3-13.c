@@ -13,7 +13,7 @@ typedef struct graph_node
 {
     int index;
     int adj_len;
-    char* ancestors;
+    unsigned int ancestors;
     color c;
     struct graph_node** adj;
 } graph_node;
@@ -77,10 +77,7 @@ vertex_list build_graph1()
 {
     vertex_list g = calloc(6, sizeof(graph_node));
     for (int i = 0; i < 6; ++i)
-    {
-        g[i].ancestors = calloc(6, sizeof(char));
         g[i].index = i;
-    }
     
     g[0].adj_len = 2;
     g[0].adj = calloc(2, sizeof(pnode));
@@ -115,10 +112,7 @@ vertex_list build_graph2()
 {
     vertex_list g = calloc(6, sizeof(graph_node));
     for (int i = 0; i < 6; ++i)
-    {
-        g[i].ancestors = calloc(6, sizeof(char));
         g[i].index = i;
-    }
     
     g[0].adj = calloc(2, sizeof(pnode));
     g[0].adj_len = 2;
@@ -162,14 +156,12 @@ bool is_singly_connected(list l)
         pnode u = (pnode)current->content;
         for (int j = 0; j < u->adj_len; ++j)
         {
-            for (int k = 0; k < 6; ++k)
-            {
-                u->adj[j]->ancestors[k] += u->ancestors[k];
-                if (u->adj[j]->ancestors[k] == 2)
-                    return false;
-            }
+            unsigned int xor = u->adj[j]->ancestors ^ u->ancestors;
+            u->adj[j]->ancestors += u->ancestors;
+            if (u->adj[j]->ancestors != xor)
+                return false;
 
-            u->adj[j]->ancestors[u->index] = 1;
+            u->adj[j]->ancestors |= 1 << u->index;
         }
         current = current->next;
     }
