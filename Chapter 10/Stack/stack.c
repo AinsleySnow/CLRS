@@ -5,18 +5,16 @@
 
 bool create_stack(stack* s, int size)
 {
-	s->stack = malloc(size * sizeof(long));
+	s->stack = calloc(size, sizeof(long));
 	if(!s->stack)
 		return false;
-	for(int i = 0; i < size; ++i)
-		s->stack[i] = 0;
 
 	s->size = size;
 	s->top = 0;
 	return true;
 }
 
-bool clear_stack(stack* s)
+void clear_stack(stack* s)
 {
 	free(s->stack);
 	s->stack = NULL;
@@ -24,20 +22,21 @@ bool clear_stack(stack* s)
 	s->size = 0;
 }
 
-bool is_stack_empty(stack s)
+bool is_stack_empty(stack* s)
 {
-	return s.top == 0;
+	return s->top == 0;
 }
 
 void push(stack* s, long x)
 {
-	s->top += 1;
-	*(s->stack + s->top) = x;
+    s->stack[s->top] = x;
+    if (s->top + 1 < s->size)
+        s->top++;
 }
 
 long pop(stack* s)
 {
-	if(IsStackEmpty(s))
+	if(is_stack_empty(s))
 		return LONG_MIN;
 	s->top -= 1;
 	return *(s->stack + s->top + 1);

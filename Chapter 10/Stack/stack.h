@@ -10,10 +10,10 @@ typedef struct stack
 	int size;
 } stack;
 
-bool is_stack_empty(stack s);
+bool is_stack_empty(stack* s);
 void push(stack* s, long x);
-int pop(stack* s);
+long pop(stack* s);
 bool create_stack(stack* s, int size);
-bool clear_stack(stack* s);
+void clear_stack(stack* s);
 
 #endif /* _STACK_H_ */
