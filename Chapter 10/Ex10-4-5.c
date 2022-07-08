@@ -7,30 +7,38 @@
 
 void walk_a_binary_tree(node* root)
 {
-    Stack s = {NULL, 0, 0};
-    CreateAStack(&s, STACK_SIZE);
+    stack s = { NULL, 0, 0 };
+    create_stack(&s, STACK_SIZE);
     
     node* current = root;
-    do
+    while (current)
     {
-        while(current)
+        push(&s, (unsigned long long)current);
+        current = current->left;
+    }
+
+    while (!is_stack_empty(&s))
+    {
+        current = (node*)pop(&s);
+        printf("%d ", current->key);
+        current = current->right;
+        while (current)
         {
-            if(current->right)
-                Push(s, (long)(current->right));
-            printf("%d ", current->key);
+            push(&s, (unsigned long long)current);
             current = current->left;
         }
-        current = Pop(&s);
-    } while (!IsStackEmpty(s));
+    }
 }
 
 int main(void)
 {
-    int nums[10] = {376, 4, 98347, 35, 48, 98, 234, -374, 4890, -37638};
-    node root = {0, NULL, NULL, NULL};
-    tree_build(&root, nums, 10);
+    int nums[10] = { 376, 4, 98347, 35, 48, 98, 234, -374, 4890, -37638 };
+    node* root = calloc(1, sizeof(node));
+    tree_build(root, nums, 10);
 
-    walk_a_binary_tree(&root);
-    delete_the_tree(&(&root));
+    inorder_tree_walk(root);
+    printf("\n");
+    walk_a_binary_tree(root);
+    delete_the_tree(&root);
     return 0;
 }
