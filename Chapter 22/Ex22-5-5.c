@@ -181,7 +181,7 @@ vertex_list build_graph()
     return vl;
 }
 
-void drop(list_node* node, list* l)
+void list_drop(list_node* node, list* l)
 {
     if (node->next)
         node->next->prev = node->prev;
@@ -234,7 +234,7 @@ int main(void)
             {
                 list_node* temp = node;
                 node = node->next;
-                drop(temp, &vl[i].adj);
+                list_drop(temp, &vl[i].adj);
             }
             else if (vl[i].scc != get_scc(node))
             {
