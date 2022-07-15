@@ -51,6 +51,9 @@ Ex22-5-5: Ex22-5-5.c List\List.c List\List.h
 Ex22-5-6: Ex22-5-6.c List\List.c List\List.h
 	$(CC) $(CFLAGS) -o Ex22-5-6 Ex22-5-6.c List\List.c List\List.h
 
+Ex22-5-7: Ex22-5-7.c List\List.c List\List.h
+	$(CC) $(CFLAGS) -o Ex22-5-7 Ex22-5-7.c List\List.c List\List.h
+
 BFS: Samples/BFS.c Queue\Queue.c Queue\Queue.h
 	$(CC) $(CFLAGS) -o BFS Queue\Queue.c Samples\BFS.c
 
