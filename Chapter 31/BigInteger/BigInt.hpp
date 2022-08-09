@@ -15,6 +15,8 @@ private:
 
 public:
     BigInt(std::array<uint64_t, 256>&);
+
+    BigInt& operator~();
     BigInt& operator+=(const BigInt& right);
     BigInt operator+(const BigInt& right);
 
@@ -24,6 +26,13 @@ public:
 BigInt::BigInt(std::array<uint64_t, 256>& array)
 {
     nums = array;
+}
+
+inline BigInt& BigInt::operator~()
+{
+    for (uint64_t& num : nums)
+        num = ~num;
+    return *this;
 }
 
 inline BigInt& BigInt::operator+=(const BigInt& right)
