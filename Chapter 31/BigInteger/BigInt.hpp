@@ -14,14 +14,14 @@ private:
     std::array<uint64_t, size> nums;
 
 public:
-    BigInt(std::array<uint64_t, 256>);
+    BigInt(std::array<uint64_t, 256>&);
     BigInt& operator+=(const BigInt& right);
     BigInt operator+(const BigInt& right);
 
     std::string ToHex();
 };
 
-BigInt::BigInt(std::array<uint64_t, 256> array)
+BigInt::BigInt(std::array<uint64_t, 256>& array)
 {
     nums = array;
 }
