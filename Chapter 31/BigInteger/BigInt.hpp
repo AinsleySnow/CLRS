@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <array>
 #include <string>
+#include <random>
 
 // Little Endian
 class BigInt
@@ -11,9 +12,11 @@ class BigInt
 private:
     static const int bytes{ 2048 };
     static const int size{ bytes / sizeof(uint64_t) + !!(bytes % sizeof(uint64_t)) };
-    std::array<uint64_t, size> nums;
+    std::array<uint64_t, size> nums{};
 
 public:
+    static BigInt GetBigRandom();
+
     BigInt(std::array<uint64_t, 256>&);
     BigInt(uint64_t);
 
@@ -32,6 +35,19 @@ public:
     std::string ToHex();
 };
 
+BigInt BigInt::GetBigRandom()
+{
+    std::random_device rd;
+    std::mt19937_64 eng(rd());
+    std::uniform_int_distribution<uint64_t> distr;
+
+    std::array<uint64_t, size> random{};
+    for (int i = 0; i < size; ++i)
+        random[i] = distr(eng);
+    
+    return BigInt{ random };
+}
+
 BigInt::BigInt(std::array<uint64_t, 256>& array)
 {
     nums = array;
@@ -39,7 +55,7 @@ BigInt::BigInt(std::array<uint64_t, 256>& array)
 
 BigInt::BigInt(uint64_t n)
 {
-    nums[nums.size() - 1] = n; 
+    nums[size - 1] = n; 
 }
 
 inline BigInt& BigInt::operator~() const
