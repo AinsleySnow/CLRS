@@ -16,9 +16,9 @@ private:
 public:
     BigInt(std::array<uint64_t, 256>&);
 
-    BigInt& operator~();
+    BigInt& operator~() const;
     BigInt& operator+=(const BigInt& right);
-    BigInt operator+(const BigInt& right);
+    BigInt operator+(const BigInt& right) const;
 
     std::string ToHex();
 };
@@ -28,11 +28,12 @@ BigInt::BigInt(std::array<uint64_t, 256>& array)
     nums = array;
 }
 
-inline BigInt& BigInt::operator~()
+inline BigInt& BigInt::operator~() const
 {
-    for (uint64_t& num : nums)
+    BigInt copy{ *this };
+    for (uint64_t& num : copy.nums)
         num = ~num;
-    return *this;
+    return copy;
 }
 
 inline BigInt& BigInt::operator+=(const BigInt& right)
@@ -64,7 +65,7 @@ inline BigInt& BigInt::operator+=(const BigInt& right)
     return *this;
 }
 
-inline BigInt BigInt::operator+(const BigInt& right)
+inline BigInt BigInt::operator+(const BigInt& right) const
 {
     BigInt copy{ *this };
     copy += right;
