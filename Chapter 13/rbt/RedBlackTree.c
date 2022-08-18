@@ -294,3 +294,20 @@ void rbt_build(rbt_node** root, int* data, int size)
     for (int i = 0; i < size; ++i)
         rb_insert(root, data[i]);
 }
+
+rbt_node* rb_search(rbt_node* root, int value)
+{
+    rbt_node* current = root;
+
+    while (current != &nil)
+    {
+        if (value == current->value)
+            return current;
+        else if (value < current->value)
+            current = current->left;
+        else
+            current = current->right;
+    }
+
+    return &nil;
+}
