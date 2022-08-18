@@ -146,6 +146,132 @@ void rb_insert(rbt_node** root, int value)
     (*root)->isRed = false;
 }
 
+static rbt_node* tree_minimun(rbt_node* node)
+{
+    rbt_node* current = node;
+    while (current->left != &nil)
+        current = current->left;
+    return current;
+}
+
+void rb_transplant(rbt_node** root, rbt_node* u, rbt_node* v)
+{
+    if (u->prev == &nil)
+        *root = v;
+    else if (u == u->prev->left)
+        u->prev->left = v;
+    else
+        u->prev->right = v;
+    if (v != &nil)
+        v->prev = u->prev;
+}
+
+void rb_delete_fixup(rbt_node** root, rbt_node* x)
+{
+    while (x != *root && !x->isRed)
+    {
+        if (x == x->prev->left)
+        {
+            rbt_node* w = x->prev->right;
+            if (w->isRed)
+            {
+                w->isRed = false;
+                x->prev->isRed = true;
+                rb_left_rotate(x, root);
+            }
+            else if (!w->left->isRed && !w->right->isRed)
+            {
+                w->isRed = true;
+                x = x->prev;
+            }
+            else if (!w->right->isRed)
+            {
+                w->left->isRed = false;
+                w->isRed = true;
+                rb_right_rotate(w, root);
+                w = x->prev->right;
+            }
+            else
+            {
+                w->isRed = x->prev->isRed;
+                x->prev->isRed = false;
+                w->right->isRed = false;
+                rb_left_rotate(x->prev, root);
+                x = *root;                
+            }
+        }
+        else
+        {
+            rbt_node* w = x->prev->left;
+            if (w->isRed)
+            {
+                w->isRed = false;
+                x->prev->isRed = true;
+                rb_right_rotate(x, root);
+            }
+            else if (!w->right->isRed && !w->left->isRed)
+            {
+                w->isRed = true;
+                x = x->prev;
+            }
+            else if (!w->left->isRed)
+            {
+                w->right->isRed = false;
+                w->isRed = true;
+                rb_left_rotate(w, root);
+                w = x->prev->left;
+            }
+            else
+            {
+                w->isRed = x->prev->isRed;
+                x->prev->isRed = false;
+                w->left->isRed = false;
+                rb_right_rotate(x->prev, root);
+                x = *root;                
+            }
+        }
+    }
+}
+
+void rb_delete(rbt_node** root, rbt_node* z)
+{
+    rbt_node* y = z;
+    rbt_node* x = &nil;
+    bool is_y_red = y->isRed;
+
+    if (z->left == &nil)
+    {
+        x = z->right;
+        rb_transplant(root, z, z->right);
+    }
+    else if (z->right == &nil)
+    {
+        x = z->left;
+        rb_transplant(root, z, z->left);
+    }
+    else
+    {
+        y = tree_minimun(z->right);
+        is_y_red = y->isRed;
+        x = y->right;
+        if (y->prev == z)
+            x->prev = y;
+        else
+        {
+            rb_transplant(root, y, y->right);
+            y->right = z->right;
+            y->right->prev = y;
+        }
+        rb_transplant(root, z, y);
+        y->left = z->left;
+        y->left->prev = y;
+        y->isRed = z->isRed;
+    }
+    
+    if (!y->isRed)
+        rb_delete_fixup(root, x);
+}
+
 void rbt_delete(rbt_node** head)
 {
     if (*head != &nil)
