@@ -20,7 +20,7 @@ public:
     BigInt(std::array<uint64_t, 256>&);
     BigInt(uint64_t);
 
-    BigInt& operator~() const;
+    BigInt operator~() const;
 
     BigInt& operator+=(const BigInt& right);
     BigInt operator+(const BigInt& right) const;
@@ -37,9 +37,9 @@ public:
 
 BigInt BigInt::GetBigRandom()
 {
-    std::random_device rd;
-    std::mt19937_64 eng(rd());
-    std::uniform_int_distribution<uint64_t> distr;
+    static std::random_device rd;
+    static std::mt19937_64 eng(rd());
+    static std::uniform_int_distribution<uint64_t> distr;
 
     std::array<uint64_t, size> random{};
     for (int i = 0; i < size; ++i)
@@ -58,7 +58,7 @@ BigInt::BigInt(uint64_t n)
     nums[size - 1] = n; 
 }
 
-inline BigInt& BigInt::operator~() const
+inline BigInt BigInt::operator~() const
 {
     BigInt copy{ *this };
     for (uint64_t& num : copy.nums)
@@ -105,6 +105,7 @@ inline BigInt BigInt::operator+(const BigInt& right) const
 inline BigInt& BigInt::operator+=(const uint64_t right)
 {
     *this += BigInt(right);
+    return *this;
 }
 
 inline BigInt BigInt::operator+(const uint64_t right) const
@@ -119,6 +120,13 @@ inline BigInt& BigInt::operator-=(const BigInt& right)
     BigInt compment{ ~right + 1 };
     *this += compment;
     return *this;
+}
+
+inline BigInt BigInt::operator-(const BigInt& right) const
+{
+    BigInt copy{ *this };
+    copy -= right;
+    return copy;
 }
 
 inline BigInt BigInt::operator-(const uint64_t right) const
