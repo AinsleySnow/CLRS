@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 rbt_node nil = {
-    NULL, NULL, NULL,
+    &nil, &nil, &nil,
     false, 0
 };
 
@@ -177,11 +177,13 @@ void rb_delete_fixup(rbt_node** root, rbt_node* x)
             {
                 w->isRed = false;
                 x->prev->isRed = true;
-                rb_left_rotate(x, root);
+                rb_left_rotate(x->prev, root);
+                w = x->prev->right;
             }
             else if (!w->left->isRed && !w->right->isRed)
             {
-                w->isRed = true;
+                if (w != &nil)
+                    w->isRed = true;
                 x = x->prev;
             }
             else if (!w->right->isRed)
@@ -207,11 +209,13 @@ void rb_delete_fixup(rbt_node** root, rbt_node* x)
             {
                 w->isRed = false;
                 x->prev->isRed = true;
-                rb_right_rotate(x, root);
+                rb_right_rotate(x->prev, root);
+                w = x->prev->left;
             }
             else if (!w->right->isRed && !w->left->isRed)
             {
-                w->isRed = true;
+                if (w != &nil)
+                    w->isRed = true;
                 x = x->prev;
             }
             else if (!w->left->isRed)
@@ -231,6 +235,8 @@ void rb_delete_fixup(rbt_node** root, rbt_node* x)
             }
         }
     }
+
+    x->isRed = false;
 }
 
 void rb_delete(rbt_node** root, rbt_node* z)
