@@ -18,5 +18,6 @@ void rb_insert(rbt_node** root, int value);
 void rbt_build(rbt_node** root, int* data, int size);
 void rbt_delete(rbt_node** head);
 rbt_node* rb_search(rbt_node* root, int value);
+void rb_delete(rbt_node** root, rbt_node* z);
 
 #endif // _RED_BLACK_TREE_H_
