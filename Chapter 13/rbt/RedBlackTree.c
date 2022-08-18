@@ -248,6 +248,10 @@ void rb_delete(rbt_node** root, rbt_node* z)
     if (z->left == &nil)
     {
         x = z->right;
+        if (x == &nil) 
+        // delete_fixup gets into an infinite loop 
+        // if x->prev not set
+            x->prev = z->prev;
         rb_transplant(root, z, z->right);
     }
     else if (z->right == &nil)
@@ -260,21 +264,25 @@ void rb_delete(rbt_node** root, rbt_node* z)
         y = tree_minimun(z->right);
         is_y_red = y->isRed;
         x = y->right;
-        if (y->prev == z)
-            x->prev = y;
-        else
+        // With x always being nil,
+        // do nothing to x->prev here
+        // also yield an infinite loop in 
+        // rb_delete_fixup
+        x->prev = y;
+        if (y->prev != z)
         {
             rb_transplant(root, y, y->right);
             y->right = z->right;
             y->right->prev = y;
         }
+        
         rb_transplant(root, z, y);
         y->left = z->left;
         y->left->prev = y;
         y->isRed = z->isRed;
     }
-    
-    if (!y->isRed)
+
+    if (!is_y_red)
         rb_delete_fixup(root, x);
 }
 
