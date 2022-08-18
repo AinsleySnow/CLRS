@@ -12,6 +12,8 @@ typedef struct rbt_node
     int value;
 } rbt_node;
 
+extern rbt_node nil;
+
 void rb_insert(rbt_node** root, int value);
 void rbt_build(rbt_node** root, int* data, int size);
 void rbt_delete(rbt_node** head);

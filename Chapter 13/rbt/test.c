@@ -7,7 +7,7 @@ int level = 0;
 
 void preorder_walk(rbt_node* x)
 {
-    if(x)
+    if(x != &nil)
     {
         ++level;
         printf("%4d, color = %5s, level = %3d\n", x->value, x->isRed ? "red" : "black", level);
@@ -21,12 +21,12 @@ int main(void)
 {
     rbt_node* root = malloc(sizeof(rbt_node));
     root->isRed = false;
-    root->left = NULL;
-    root->prev = NULL;
-    root->right = NULL;
+    root->left = &nil;
+    root->prev = &nil;
+    root->right = &nil;
     root->value = 123;
 
-    int num[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int num[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
     rbt_build(&root, num, 10);
     preorder_walk(root);
