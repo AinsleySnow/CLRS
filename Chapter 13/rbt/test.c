@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 int level = 0;
 
@@ -26,10 +27,23 @@ int main(void)
     root->right = &nil;
     root->value = 123;
 
-    int num[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    srand(time(NULL));
+    int num[10];
+    for (int i = 0; i < 10; ++i)
+    {
+        num[i] = rand() % 100;
+        printf("num[%d] = %d\n", i, num[i]);
+    }
 
     rbt_build(&root, num, 10);
+    printf("Tree before deleting num[0] and num[2]:\n");
     preorder_walk(root);
+
+    rb_delete(&root, rb_search(root, num[0]));
+    rb_delete(&root, rb_search(root, num[2]));
+    printf("Tree after deleting num[0] and num[2]:\n");
+    preorder_walk(root);
+
     rbt_delete(&root);
     return 0;
 }
