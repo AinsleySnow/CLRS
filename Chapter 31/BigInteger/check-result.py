@@ -1,26 +1,56 @@
 from os import system
 
-if __name__ == '__main__':
-    system('.\\bigint-test.exe')
+def test_addition(times) -> bool:
     e = int('1' + '0' * 4096, 16)
 
-    with open('output') as result:
-        while True:
-            try:
-                a = int(result.readline(), 16)
-                b = int(result.readline(), 16)
-                c = int(result.readline(), 16)
-                d = (a + b) % e
-                if d != c:
-                    print('An a + b doesn\'t equal c. Check check.log for detailed information.')
-                    with open('check.log', 'w') as log:
-                        log.writelines(('A = %X\n' % a, 
-                                        'B = %X\n' % b, 
-                                        'C = %X\n' % c,
-                                        'C should be %X\n' % d))
-                    break
-            except ValueError:
-                break
+    with open('add') as result:
+        for i in range(times):
+            a = int(result.readline(), 16)
+            b = int(result.readline(), 16)
+            c = int(result.readline(), 16)
+            d = (a + b) % e
+            if d != c:
+                print('An a + b doesn\'t equal c. Check add.log for detailed information.')
+                with open('add.log', 'w') as log:
+                    log.writelines(('A = %X\n' % a, 
+                                    'B = %X\n' % b, 
+                                    'C = %X\n' % c,
+                                    'C should be %X\n' % d))
+                return False
     
-    print('All tests passed.')
-    system('del output')
+    return True
+
+def test_subtraction(times) -> bool:
+    e = int('1' + '0' * 4096, 16)
+
+    with open('sub') as result:
+        for i in range(times):
+            a = int(result.readline(), 16)
+            b = int(result.readline(), 16)
+            c = int(result.readline(), 16)
+            d = (a - b) % e
+            if d != c:
+                print('An a - b doesn\'t equal c. Check sub.log for detailed information.')
+                with open('sub.log', 'w') as log:
+                    log.writelines(('A = %X\n' % a, 
+                                    'B = %X\n' % b, 
+                                    'C = %X\n' % c,
+                                    'C should be %X\n' % d))
+                return False
+    
+    return True
+
+
+func_list = [ test_addition, test_subtraction ]
+
+
+if __name__ == '__main__':
+    system('.\\' + 'bigint-test.exe')
+
+    for func in func_list:
+        if not func(1000):
+            break
+    else:
+        print('All tests passed.')
+        system('del add')
+        system('del sub')
