@@ -173,20 +173,21 @@ inline BigInt& BigInt::operator*=(const BigInt& right)
 {
     bool carry_on = false;
     uint64_t carry = 0;
-    for (int i = size - 1; i >= 0; --i)
+    for (int j = size - 1; j >= 0; --j) // the lower row
     {
-        uint64_t carry_next_turn;
-        nums[i] = u64_mul(nums[i], right.nums[i], carry_next_turn);
-        if (carry)
+        uint64_t carry_next_turn = 0;
+        for (int i = size - 1; i >= size - 1 - j; --i) // the upper row
         {
-            uint64_t temp;
-            if (__builtin_add_overflow(nums[i], carry, &temp))
-                carry_next_turn += 1;
-            nums[i] = temp;
-            carry = 0;
+            nums[i] = u64_mul(nums[i], right.nums[j], carry_next_turn);
+            if (carry)
+            {
+                uint64_t temp;
+                if (__builtin_add_overflow(nums[i], carry, &temp))
+                    carry_next_turn += 1;
+                nums[i] = temp;
+            }
+            carry = carry_next_turn;
         }
-
-        carry = carry_next_turn;
     }
 
     return *this;
