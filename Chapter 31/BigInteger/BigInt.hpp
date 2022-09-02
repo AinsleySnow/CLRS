@@ -19,6 +19,7 @@ private:
 public:
     static BigInt GetBigRandom();
 
+    BigInt() {};
     BigInt(std::array<uint64_t, 256>&);
     BigInt(uint64_t);
 
@@ -171,26 +172,45 @@ inline uint64_t BigInt::u64_mul(uint64_t left, uint64_t right, uint64_t& carry)
 
 inline BigInt& BigInt::operator*=(const BigInt& right)
 {
-    bool carry_on = false;
-    uint64_t carry = 0;
+    BigInt new_right{};
+
     for (int j = size - 1; j >= 0; --j) // the lower row
     {
         uint64_t carry_next_turn = 0;
+        uint64_t carry = 0;
+        BigInt result{};
+        
         for (int i = size - 1; i >= size - 1 - j; --i) // the upper row
         {
-            nums[i] = u64_mul(nums[i], right.nums[j], carry_next_turn);
+            result.nums[j - ((size - 1) - i)] = u64_mul(nums[i], right.nums[j], carry_next_turn);
             if (carry)
             {
                 uint64_t temp;
-                if (__builtin_add_overflow(nums[i], carry, &temp))
+                if (__builtin_add_overflow(result.nums[j - ((size - 1) - i)], carry, &temp))
                     carry_next_turn += 1;
-                nums[i] = temp;
+                result.nums[j - ((size - 1) - i)] = temp;
             }
             carry = carry_next_turn;
         }
+        new_right += result;
     }
 
+    *this = new_right;
     return *this;
+}
+
+inline BigInt BigInt::operator*(const BigInt& right) const
+{
+    BigInt copy{ *this };
+    copy *= right;
+    return copy;
+}
+
+inline BigInt BigInt::operator*(const uint64_t right) const
+{
+    BigInt copy{ *this };
+    copy *= right;
+    return copy;
 }
 
 std::string BigInt::ToHex()
