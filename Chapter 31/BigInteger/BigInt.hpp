@@ -7,10 +7,10 @@
 #include <random>
 
 // Big Endian
+template <size_t bytes>
 class BigInt
 {
 private:
-    static const int bytes{ 2048 };
     static const int size{ bytes / sizeof(uint64_t) + !!(bytes % sizeof(uint64_t)) };
     std::array<uint64_t, size> nums{};
 
@@ -20,13 +20,11 @@ public:
     static BigInt GetBigRandom();
 
     BigInt() {};
-    BigInt(std::array<uint64_t, 256>&);
+    BigInt(std::array<uint64_t, size>& array) : 
+        nums(array) {};
     BigInt(uint64_t);
 
     BigInt operator~() const;
-
-    BigInt operator<<(size_t) const;
-    BigInt operator>>(size_t) const;
 
     BigInt& operator+=(const BigInt& right);
     BigInt operator+(const BigInt& right) const;
@@ -46,7 +44,8 @@ public:
     std::string ToHex();
 };
 
-BigInt BigInt::GetBigRandom()
+template <size_t bytes>
+BigInt<bytes> BigInt<bytes>::GetBigRandom()
 {
     static std::random_device rd;
     static std::mt19937_64 eng(rd());
@@ -56,28 +55,26 @@ BigInt BigInt::GetBigRandom()
     for (int i = 0; i < size; ++i)
         random[i] = distr(eng);
 
-    return BigInt{ random };
+    return BigInt<bytes>{ random };
 }
 
-BigInt::BigInt(std::array<uint64_t, 256>& array)
-{
-    nums = array;
-}
-
-BigInt::BigInt(uint64_t n)
+template <size_t bytes>
+BigInt<bytes>::BigInt(uint64_t n)
 {
     nums[size - 1] = n; 
 }
 
-inline BigInt BigInt::operator~() const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator~() const
 {
-    BigInt copy{ *this };
+    BigInt<bytes> copy{ *this };
     for (uint64_t& num : copy.nums)
         num = ~num;
     return copy;
 }
 
-inline BigInt& BigInt::operator+=(const BigInt& right)
+template <size_t bytes>
+inline BigInt<bytes>& BigInt<bytes>::operator+=(const BigInt<bytes>& right)
 {
     bool carry_on{ false };
 
@@ -106,48 +103,55 @@ inline BigInt& BigInt::operator+=(const BigInt& right)
     return *this;
 }
 
-inline BigInt BigInt::operator+(const BigInt& right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator+(const BigInt<bytes>& right) const
 {
-    BigInt copy{ *this };
+    BigInt<bytes> copy{ *this };
     copy += right;
     return copy;
 }
 
-inline BigInt& BigInt::operator+=(const uint64_t right)
+template <size_t bytes>
+inline BigInt<bytes>& BigInt<bytes>::operator+=(const uint64_t right)
 {
-    *this += BigInt(right);
+    *this += BigInt<bytes>(right);
     return *this;
 }
 
-inline BigInt BigInt::operator+(const uint64_t right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator+(const uint64_t right) const
 {
-    BigInt copy{ *this };
-    copy += BigInt(right);
+    BigInt<bytes> copy{ *this };
+    copy += BigInt<bytes>(right);
     return copy;
 }
 
-inline BigInt& BigInt::operator-=(const BigInt& right)
+template <size_t bytes>
+inline BigInt<bytes>& BigInt<bytes>::operator-=(const BigInt<bytes>& right)
 {
-    BigInt compment{ ~right + 1 };
+    BigInt<bytes> compment{ ~right + 1 };
     *this += compment;
     return *this;
 }
 
-inline BigInt BigInt::operator-(const BigInt& right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator-(const BigInt<bytes>& right) const
 {
-    BigInt copy{ *this };
+    BigInt<bytes> copy{ *this };
     copy -= right;
     return copy;
 }
 
-inline BigInt BigInt::operator-(const uint64_t right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator-(const uint64_t right) const
 {
-    BigInt copy{ *this };
-    copy += ~BigInt(right) + 1;
+    BigInt<bytes> copy{ *this };
+    copy += ~BigInt<bytes>(right) + 1;
     return copy;
 }
 
-inline uint64_t BigInt::u64_mul(uint64_t left, uint64_t right, uint64_t& carry)
+template <size_t bytes>
+inline uint64_t BigInt<bytes>::u64_mul(uint64_t left, uint64_t right, uint64_t& carry)
 {
     uint64_t left_h = left >> 32;
     uint64_t right_h = right >> 32;
@@ -170,15 +174,16 @@ inline uint64_t BigInt::u64_mul(uint64_t left, uint64_t right, uint64_t& carry)
     return result1 + (result2 << 32);
 }
 
-inline BigInt& BigInt::operator*=(const BigInt& right)
+template <size_t bytes>
+inline BigInt<bytes>& BigInt<bytes>::operator*=(const BigInt<bytes>& right)
 {
-    BigInt new_right{};
+    BigInt<bytes> new_right{};
 
     for (int j = size - 1; j >= 0; --j) // the lower row
     {
         uint64_t carry_next_turn = 0;
         uint64_t carry = 0;
-        BigInt result{};
+        BigInt<bytes> result{};
         
         for (int i = size - 1; i >= size - 1 - j; --i) // the upper row
         {
@@ -199,21 +204,24 @@ inline BigInt& BigInt::operator*=(const BigInt& right)
     return *this;
 }
 
-inline BigInt BigInt::operator*(const BigInt& right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator*(const BigInt<bytes>& right) const
 {
-    BigInt copy{ *this };
+    BigInt<bytes> copy{ *this };
     copy *= right;
     return copy;
 }
 
-inline BigInt BigInt::operator*(const uint64_t right) const
+template <size_t bytes>
+inline BigInt<bytes> BigInt<bytes>::operator*(const uint64_t right) const
 {
-    BigInt copy{ *this };
+    BigInt<bytes> copy{ *this };
     copy *= right;
     return copy;
 }
 
-std::string BigInt::ToHex()
+template <size_t bytes>
+std::string BigInt<bytes>::ToHex()
 {
     std::string repr{};
     char hexrepr[17]{};

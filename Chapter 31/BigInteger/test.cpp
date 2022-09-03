@@ -6,9 +6,9 @@ void addition(FILE* const output)
 {
     for (int i = 0; i < 10000; ++i)
     {
-        BigInt bigA = BigInt::GetBigRandom();
-        BigInt bigB = BigInt::GetBigRandom();
-        BigInt bigC = bigA + bigB;
+        BigInt<2048> bigA = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigB = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigC = bigA + bigB;
         
         fprintf(output, "0x%s\n", bigA.ToHex().c_str());
         fprintf(output, "0x%s\n", bigB.ToHex().c_str());
@@ -20,9 +20,9 @@ void subtraction(FILE* const output)
 {
     for (int i = 0; i < 10000; ++i)
     {
-        BigInt bigA = BigInt::GetBigRandom();
-        BigInt bigB = BigInt::GetBigRandom();
-        BigInt bigC = bigA - bigB;
+        BigInt<2048> bigA = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigB = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigC = bigA - bigB;
         
         fprintf(output, "0x%s\n", bigA.ToHex().c_str());
         fprintf(output, "0x%s\n", bigB.ToHex().c_str());
@@ -34,9 +34,9 @@ void multiplication(FILE* const output)
 {
     for (int i = 0; i < 10000; ++i)
     {
-        BigInt bigA = BigInt::GetBigRandom();
-        BigInt bigB = BigInt::GetBigRandom();
-        BigInt bigC = bigA * bigB;
+        BigInt<2048> bigA = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigB = BigInt<2048>::GetBigRandom();
+        BigInt<2048> bigC = bigA * bigB;
         
         fprintf(output, "0x%s\n", bigA.ToHex().c_str());
         fprintf(output, "0x%s\n", bigB.ToHex().c_str());
